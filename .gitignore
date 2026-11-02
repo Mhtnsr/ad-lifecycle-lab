@@ -1,0 +1,33 @@
+# Credentials and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+credentials*
+# Real inputs and collected evidence stay local
+data/private/
+reports/
+evidence/raw/
+*.log
+*.evtx
+*.pcap
+*.pcapng
+# VM disks, backups, and installers
+*.vhd
+*.vhdx
+*.vmdk
+*.qcow2
+*.iso
+*.bak
+# Runtime/editor files
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
