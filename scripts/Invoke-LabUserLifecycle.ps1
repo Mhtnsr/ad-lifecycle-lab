@@ -17,9 +17,9 @@ function Invoke-LabUserLifecycle {
         $plan.Status='NotApplied'; return $plan
     }
     Import-Module ActiveDirectory -ErrorAction Stop
-    $ou = Get-ADOrganizationalUnit -Identity $LabOU -Server $Server -ErrorAction Stop
     $domain = Get-ADDomain -Server $Server -ErrorAction Stop
     if ($domain.DNSRoot -notlike '*.invalid') { throw 'Only .invalid lab domains are permitted.' }
+    $ou = Get-ADOrganizationalUnit -Identity $LabOU -Server $Server -ErrorAction Stop
     if ($Action -eq 'Create') {
         New-ADUser -Name $SamAccountName -SamAccountName $SamAccountName `
             -Path $ou.DistinguishedName -Server $Server -Enabled $false -ErrorAction Stop

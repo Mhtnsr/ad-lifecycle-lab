@@ -1,55 +1,47 @@
-# Ad Lifecycle Lab
+# Active Directory account lifecycle — lab prototype
 
-Plan-first Active Directory lifecycle automation scoped to an explicit lab OU.
+A small PowerShell function for two operations: creating a disabled lab account and disabling an existing lab account. This is a personal prototype, not a complete joiner/leaver workflow.
 
-**Owner:** [Mahamat Nassour Ahmat](https://github.com/Mhtnsr) · IT Support Specialist → Systems Administrator
+## Why this project
 
-## Problem
+Account changes need an explicit target, a review step, and a clear limit on scope. This project explores those controls before adding more automation.
 
-Unreviewed account changes can affect the wrong directory or user.
+## Behavior
 
-## Solution
+| Invocation | Result |
+| --- | --- |
+| Without `-Apply` | Returns a plan; no AD module or network connection is needed |
+| `-Apply -WhatIf` | Reports the intended change without running directory commands |
+| `-Apply` | Requests confirmation, checks the lab domain, and performs the selected operation |
 
-A dry-run-first PowerShell function with explicit server/OU, input validation, confirmation, and .invalid-domain scope. Create produces a disabled account; Disable checks OU membership before disabling. Entra ID offboarding is a separate design checklist, not implemented cloud automation.
+The domain must end in `.invalid`. The target OU must start with `OU=Lab,` or `OU=Sandbox,`. Disable also checks that the account is inside that OU. Create leaves the account disabled and assigns no password or group access.
 
-## Usage
+## Try the plan
 
-Run from the repository root. Use an isolated, authorized environment and inspect source before execution.
+Run from this repository in PowerShell:
 
 ```powershell
 . ./scripts/Invoke-LabUserLifecycle.ps1
-Invoke-LabUserLifecycle -Action Create -SamAccountName lab.user01 -Server dc01.lab.invalid -LabOU 'OU=Lab,DC=lab,DC=invalid'
-# Preview explicit apply (no change):
-Invoke-LabUserLifecycle -Action Disable -SamAccountName lab.user01 -Server dc01.lab.invalid -LabOU 'OU=Lab,DC=lab,DC=invalid' -Apply -WhatIf
-# Only in your isolated .invalid lab, after reviewing the plan:
-# Invoke-LabUserLifecycle ... -Apply  # prompts for confirmation
+$lab = @{
+    SamAccountName = 'lab.user01'
+    Server = 'dc01.lab.invalid'
+    LabOU = 'OU=Lab,DC=lab,DC=invalid'
+}
+Invoke-LabUserLifecycle -Action Create @lab
+Invoke-LabUserLifecycle -Action Disable @lab -Apply -WhatIf
 ./tests/Test-Lifecycle.ps1
 ```
 
-## Validation and limits
+Real Apply requires Windows, RSAT's ActiveDirectory module, an isolated `.invalid` lab domain, and delegated permissions. `Status=Applied` means the command completed; independently read back account state and test the intended access before treating a change as verified.
 
-Five local plan/validation checks passed; real Active Directory mutation is not lab-validated. Requires Windows RSAT/ActiveDirectory module and delegated lab permissions for Apply. No passwords, group grants, deletions, mailbox actions, or Entra session revocation are implemented.
+## Validation
 
-## Screenshots and evidence
+[Local validation record](docs/validation.md). The tests cover plan-only behavior, WhatIf, rejected input, disabled account creation, scope rejection, and non-lab domain rejection. Directory commands are mocked. No live account has been created or disabled as part of this portfolio.
 
-[Evidence checklist](evidence/README.md). Placeholder: add a sanitized capture of the actual execution or lab result here after validation. No screenshots or outcomes are fabricated.
+## Deliberately outside the scope
 
-<!-- Example after creating the file: ![Sanitized lab result](evidence/lab-result.png) -->
+Password delivery, licensing, group grants, mailboxes, retention, deletion, and Entra ID session revocation are not implemented. [Entra offboarding notes](docs/entra-offboarding.md) are a design checklist only.
 
-## Repository map
+Next: build the isolated domain, run one ordinary test account through both operations, and record actual state, errors, and recovery. [Evidence index](evidence/README.md).
 
-Source belongs in `scripts/`, reproducible checks in `tests/`, synthetic inputs in `examples/`, design notes in `docs/`, reusable records in `templates/`, and sanitized proof in `evidence/`. Only directories relevant to this project are created.
-
-## Next steps
-
-- Capture a reproducible lab run with expected versus observed behavior.
-- Document failure cases and recovery or escalation.
-- Update validation status only after recording actual results.
-
-## Security
-
-See [SECURITY.md](SECURITY.md). No company data, credentials, internal topology, or live ticket details belong here.
-
-## License
-
-[MIT](LICENSE). A personal learning project; not affiliated with or endorsed by USEReady, Microsoft, CompTIA, or other vendors.
+[MIT license](LICENSE) · [Security and data handling](SECURITY.md)
