@@ -17,3 +17,7 @@
 Passing checks validate the represented cases and runner environment. They do not establish live AD/Entra behavior, Intune enrollment, application performance, or production suitability. GitHub-hosted Windows is not the owner's personal home lab.
 
 The live snapshot check deliberately fails if Windows OS or disk collection is unavailable. An absent print spooler is recorded as unavailable and does not trigger a service change.
+
+## Recorded run
+
+[November 7 passing results](ci-results-2026-11-07.md) include source commit IDs, runtimes, and scope.

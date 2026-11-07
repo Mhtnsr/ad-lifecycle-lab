@@ -49,3 +49,5 @@ Next: build the isolated domain, run one ordinary test account through both oper
 ## Automated checks
 
 [CI configuration and limits](docs/ci.md) · [Latest workflow runs](https://github.com/Mhtnsr/ad-lifecycle-lab/actions/workflows/checks.yml)
+
+[Recorded passing run — November 7, 2026](docs/ci-results-2026-11-07.md).
