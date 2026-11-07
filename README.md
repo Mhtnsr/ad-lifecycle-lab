@@ -45,3 +45,9 @@ Password delivery, licensing, group grants, mailboxes, retention, deletion, and 
 Next: build the isolated domain, run one ordinary test account through both operations, and record actual state, errors, and recovery. [Evidence index](evidence/README.md).
 
 [MIT license](LICENSE) · [Security and data handling](SECURITY.md)
+
+## Automated checks
+
+[CI configuration and limits](docs/ci.md) · [Latest workflow runs](https://github.com/Mhtnsr/ad-lifecycle-lab/actions/workflows/checks.yml)
+
+[Recorded passing run — November 7, 2026](docs/ci-results-2026-11-07.md).
