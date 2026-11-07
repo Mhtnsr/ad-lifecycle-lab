@@ -15,19 +15,27 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
-    name: Windows / ${{ matrix.shell }}
+  powershell:
+    name: Windows / powershell
     runs-on: windows-latest
     timeout-minutes: 10
-    strategy:
-      fail-fast: false
-      matrix:
-        shell: [powershell, pwsh]
     steps:
       - name: Check out source
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           persist-credentials: false
       - name: Run fixture-based checks
-        shell: ${{ matrix.shell }}
+        shell: powershell
+        run: ./tests/Test-Lifecycle.ps1
+  pwsh:
+    name: Windows / pwsh
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Run fixture-based checks
+        shell: pwsh
         run: ./tests/Test-Lifecycle.ps1
